@@ -30,4 +30,10 @@ build:
     - script:
         name: go test cover
         code: |
-          go test -cover ./src/...
+          WATERMARK="90.0";
+          COVEROUT=`go test -cover ./src/...`;
+          arrIN=(${COVEROUT/// });
+          COVERLEVEL=`echo ${arrIN[4]} | tr "%" " "`;
+          echo "Coverage - ${COVERLEVEL}%"
+          echo "Watermark- ${WATERMARK}%"
+          (exit `echo "$COVERLEVEL < $WATERMARK" | bc`);
