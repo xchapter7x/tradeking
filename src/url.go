@@ -49,6 +49,6 @@ func buildEndPointWithId(domain, version, format, path, id string) (endPoint str
 }
 
 func buildEndPoint(domain, version, format, path string) (endPoint string) {
-    endPoint := PROTO + domain + "/" + version + "/" + path + "." + format
+    endPoint = PROTO + domain + "/" + version + "/" + path + "." + format
     return
 }
