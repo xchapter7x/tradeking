@@ -30,4 +30,4 @@ build:
     - script:
         name: go test cover
         code: |
-          sh testCoverage.sh
+          ./testCoverage
