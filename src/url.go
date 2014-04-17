@@ -12,6 +12,8 @@ const (
     VERSION_CURRENT                 = VERSION_1
     FORMAT_JSON                     = "json"
     FORMAT_XML                      = "xml"
+    GET                        = "GET"
+    POST                       = "POST"
     MARKET                          = "market"
     UTILITY                         = "utility"
     URL_OAUTH_REQUEST               = PROTO + DOMAIN_DEVELOPERS + "/oauth/request_token"
@@ -41,6 +43,14 @@ const (
     URL_WATCHLISTS_ID               = URL_WATCHLISTS + "/%s"
     URL_WATCHLISTS_ID_SYMBOLS       = URL_WATCHLISTS_ID + "/symbols"
 )
+
+func GetStreamForSymbols(oauthC *OAuthConnection, symbols string) (channelBuffer *StreamChannel) {
+    url := buildEndPoint(DOMAIN_STREAM, VERSION_CURRENT, FORMAT_JSON, URL_STREAM_MARKET_QUOTES)
+    url = url + "?symbols=" + symbols
+    res, _ := oauthC.MakeHttpRequest(GET, url, "")
+    channelBuffer = oauthC.GetStreamChannelFromReader(res.Body)
+    return
+}
 
 func buildEndPointWithId(domain, version, format, path, id string) (endPoint string) {
     endPointFormat := buildEndPoint(domain, version, format, path)
