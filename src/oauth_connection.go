@@ -14,6 +14,11 @@ func NewOAuthConnection(consumerKey, consumerSecret, accessToken, accessSecret s
     return
 }
 
+type OAuthInterface interface {
+    MakeHttpRequest(verb, url, args string) (httpResponse *http.Response, err error)
+    GetStreamChannelFromReader(buf io.ReadCloser) (stream *StreamChannel)
+}
+
 type OAuthConnection struct {
     service *oauth1a.Service
     userConfig *oauth1a.UserConfig

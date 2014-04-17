@@ -44,7 +44,7 @@ const (
     URL_WATCHLISTS_ID_SYMBOLS       = URL_WATCHLISTS_ID + "/symbols"
 )
 
-func GetStreamForSymbols(oauthC *OAuthConnection, symbols string) (channelBuffer *StreamChannel) {
+func GetStreamForSymbols(oauthC OAuthInterface, symbols string) (channelBuffer *StreamChannel) {
     url := buildEndPoint(DOMAIN_STREAM, VERSION_CURRENT, FORMAT_JSON, URL_STREAM_MARKET_QUOTES)
     url = url + "?symbols=" + symbols
     res, _ := oauthC.MakeHttpRequest(GET, url, "")
