@@ -21,17 +21,15 @@ import (
 )
 
 func main() {
-  consumerKey := "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  consumerSecret := "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  accessToken := "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  accessSecret := "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  oauthKey := OauthKeyStorage{
+    ConsumerKey: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    ConsumerSecret: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    AccessToken: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    AccessSecret: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}
 
-  oauthC := tk.NewOAuthConnection(consumerKey,
-                                consumerSecret,
-                                accessToken,
-                                accessSecret)
-
+  oauthC := tk.NewOAuthConnection(oauthKey)
   streamChannel := tk.GetStreamForSymbols(oauthC, "BLK")
+  
   for s := range streamChannel.Channel {
     fmt.Println("Packet recieved: ", s)
   }

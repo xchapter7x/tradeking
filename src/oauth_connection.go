@@ -6,9 +6,13 @@ import (
     "net/http"
 )
 
-func NewOAuthConnection(consumerKey, consumerSecret, accessToken, accessSecret string) (oauthConnection *OAuthConnection){
-    service := OAuthConnection{}.getService(consumerKey, consumerSecret)
-    userConfig := OAuthConnection{}.getOauthConfig(accessToken, accessSecret)
+//maybe make a single interface to handle this?
+//make httpRequestFunctor
+//make httpCLientDoFunctor
+
+func NewOAuthConnection(keyObject OauthKeyStorage) (oauthConnection *OAuthConnection) {
+    service := createOauthService(keyObject.ConsumerKey, keyObject.ConsumerSecret)
+    userConfig := createOauthConfig(keyObject.AccessToken, keyObject.AccessSecret)
     oauthConnection = &OAuthConnection{service: service,
                                         userConfig: userConfig}
     return
@@ -24,7 +28,7 @@ type OAuthConnection struct {
     userConfig *oauth1a.UserConfig
 }
 
-func (s OAuthConnection) getService(consumerKey, consumerSecret string) (service *oauth1a.Service) {
+func createOauthService(consumerKey, consumerSecret string) (service *oauth1a.Service) {
     service = &oauth1a.Service{
         RequestURL:   URL_OAUTH_REQUEST,
         AuthorizeURL: URL_OAUTH_AUTHORIZE,
@@ -39,7 +43,7 @@ func (s OAuthConnection) getService(consumerKey, consumerSecret string) (service
     return
 }
 
-func (s OAuthConnection) getOauthConfig(accessToken, accessSecret string) (userConfig *oauth1a.UserConfig) {
+func createOauthConfig(accessToken, accessSecret string) (userConfig *oauth1a.UserConfig) {
     userConfig = oauth1a.NewAuthorizedConfig(accessToken, accessSecret)
     return
 }
