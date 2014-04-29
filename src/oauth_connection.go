@@ -9,21 +9,32 @@ import (
 //maybe make a single interface to handle this?
 //make httpRequestFunctor
 //make httpCLientDoFunctor
+type requestInterface func (string, string, io.Reader) (*http.Request, error)
 
-func NewOAuthConnection(keyObject OauthKeyStorage) (oauthConnection *OAuthConnection) {
-    service := createOauthService(keyObject.ConsumerKey, keyObject.ConsumerSecret)
-    userConfig := createOauthConfig(keyObject.AccessToken, keyObject.AccessSecret)
-    oauthConnection = &OAuthConnection{service: service,
-                                        userConfig: userConfig}
-    return
+type clientDoInterface interface {
+    Do (req *http.Request) (resp *http.Response, err error)
 }
 
 type OAuthInterface interface {
-    MakeHttpRequest(verb, url, args string) (httpResponse *http.Response, err error)
+    MakeHttpRequest(verb, endPoint string) (httpResponse *http.Response, err error)
     GetStreamChannelFromReader(buf io.ReadCloser) (stream *StreamChannel)
 }
 
+func NewOAuthConnection(keyObject OauthKeyStorage,
+                        newRequestFunctor requestInterface,
+                        clientFunctor clientDoInterface) (oauthConnection *OAuthConnection) {
+    service := createOauthService(keyObject.ConsumerKey, keyObject.ConsumerSecret)
+    userConfig := createOauthConfig(keyObject.AccessToken, keyObject.AccessSecret)
+    oauthConnection = &OAuthConnection{service: service,
+                                        userConfig: userConfig,
+                                        newRequestFunctor: newRequestFunctor,
+                                        clientFunctor: clientFunctor}
+    return
+}
+
 type OAuthConnection struct {
+    newRequestFunctor requestInterface
+    clientFunctor clientDoInterface
     service *oauth1a.Service
     userConfig *oauth1a.UserConfig
 }
@@ -48,11 +59,10 @@ func createOauthConfig(accessToken, accessSecret string) (userConfig *oauth1a.Us
     return
 }
 
-func (s *OAuthConnection) MakeHttpRequest(verb, url, args string) (httpResponse *http.Response, err error) {
-    endPoint := url+args
-    httpRequest, _ := http.NewRequest(verb, endPoint, nil)
+func (s *OAuthConnection) MakeHttpRequest(verb, endPoint string) (httpResponse *http.Response, err error) {
+    httpRequest, _ := s.newRequestFunctor(verb, endPoint, nil)
     s.service.Sign(httpRequest, s.userConfig)
-    httpResponse, err = http.DefaultClient.Do(httpRequest)
+    httpResponse, err = s.clientFunctor.Do(httpRequest)
     return
 }
 

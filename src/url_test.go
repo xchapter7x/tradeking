@@ -15,14 +15,21 @@ func (mockResponseBody) Close() error { return nil }
 
 type OAuthMock struct {}
 
-func (s *OAuthMock) MakeHttpRequest(verb, url, args string) (httpResponse *http.Response, err error) {
+func (s *OAuthMock) MakeHttpRequest(verb, url string) (httpResponse *http.Response, err error) {
     httpResponse = &http.Response{}
     httpResponse.Body = mockResponseBody{bytes.NewBufferString("{\"status\":\"connected\"}")}
     return
 }
 
 func (s *OAuthMock) GetStreamChannelFromReader(buf io.ReadCloser) (stream *StreamChannel) {
-    o := &OAuthConnection{}
+    oauthKey := OauthKeyStorage{
+        ConsumerKey: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        ConsumerSecret: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        AccessToken: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        AccessSecret: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}
+    o := NewOAuthConnection(oauthKey,
+                       http.NewRequest,
+                       http.DefaultClient)
     stream = o.GetStreamChannelFromReader(buf)
     return
 }

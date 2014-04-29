@@ -47,7 +47,9 @@ const (
 func GetStreamForSymbols(oauthC OAuthInterface, symbols string) (channelBuffer *StreamChannel) {
     url := buildEndPoint(DOMAIN_STREAM, VERSION_CURRENT, FORMAT_JSON, URL_STREAM_MARKET_QUOTES)
     url = url + "?symbols=" + symbols
-    res, _ := oauthC.MakeHttpRequest(GET, url, "")
+    args := ""
+    endPoint := url+args
+    res, _ := oauthC.MakeHttpRequest(GET, endPoint)
     channelBuffer = oauthC.GetStreamChannelFromReader(res.Body)
     return
 }
