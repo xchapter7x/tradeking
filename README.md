@@ -27,7 +27,9 @@ func main() {
     AccessToken: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     AccessSecret: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}
 
-  oauthC := tk.NewOAuthConnection(oauthKey)
+  oauthC := tk.NewOAuthConnection(oauthKey,
+                                  http.NewRequest,
+                                  http.DefaultClient)
   streamChannel := tk.GetStreamForSymbols(oauthC, "BLK")
   
   for s := range streamChannel.Channel {
