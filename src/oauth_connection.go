@@ -6,9 +6,6 @@ import (
     "net/http"
 )
 
-//maybe make a single interface to handle this?
-//make httpRequestFunctor
-//make httpCLientDoFunctor
 type requestInterface func (string, string, io.Reader) (*http.Request, error)
 
 type clientDoInterface interface {
