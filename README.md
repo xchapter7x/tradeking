@@ -22,7 +22,7 @@ import (
 )
 
 func main() {
-  oauthKey := OauthKeyStorage{
+  oauthKey := tk.OauthKeyStorage{
     ConsumerKey: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     ConsumerSecret: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     AccessToken: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
