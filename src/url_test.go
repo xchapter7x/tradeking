@@ -21,6 +21,11 @@ func (s *OAuthMock) MakeHttpRequest(verb, url string) (httpResponse *http.Respon
     return
 }
 
+func (s *OAuthMock) GetChannelFromReader(buf io.ReadCloser) (stream *StreamChannel) {
+    stream = s.GetStreamChannelFromReader(buf)
+    return
+}
+
 func (s *OAuthMock) GetStreamChannelFromReader(buf io.ReadCloser) (stream *StreamChannel) {
     oauthKey := OauthKeyStorage{
         ConsumerKey: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",

@@ -15,6 +15,7 @@ type clientDoInterface interface {
 type OAuthInterface interface {
     MakeHttpRequest(verb, endPoint string) (httpResponse *http.Response, err error)
     GetStreamChannelFromReader(buf io.ReadCloser) (stream *StreamChannel)
+    GetChannelFromReader(buf io.ReadCloser) (stream *StreamChannel)
 }
 
 func NewOAuthConnection(keyObject OauthKeyStorage,
@@ -65,11 +66,19 @@ func (s *OAuthConnection) MakeHttpRequest(verb, endPoint string) (httpResponse *
 
 func (s *OAuthConnection) GetStreamChannelFromReader(buf io.ReadCloser) (stream *StreamChannel) {
     stream = NewStreamChannel()
-    go streamToChannel(buf, stream)
+    isStream := true
+    go readToChannel(buf, stream, isStream)
     return
 }
 
-func streamToChannel(buf io.ReadCloser, stream *StreamChannel) {
+func (s *OAuthConnection) GetChannelFromReader(buf io.ReadCloser) (stream *StreamChannel) {
+    stream = NewStreamChannel()
+    isStream := false
+    go readToChannel(buf, stream, isStream)
+    return
+}
+
+func readToChannel(buf io.ReadCloser, stream *StreamChannel, keepAlive bool) {
     var line string
     defer buf.Close()
     reader := bufio.NewReader(buf)
@@ -80,6 +89,10 @@ func streamToChannel(buf io.ReadCloser, stream *StreamChannel) {
         if bufferBreakPoint(reader) {
             (*stream).Write(line)
             line = ""
+
+            if !keepAlive {
+                (*stream).Close()
+            }
         }
         line += readIntoLine(reader)
     }
