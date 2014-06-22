@@ -34,11 +34,16 @@ func getEndPoint() (string) {
     endPoint := url+args
     return endPoint
 }
+
 func Test_NewOAuthConnection(t *testing.T) {
     //t.Errorf("; values should be the same")
 }
 
 func Test_GetStreamChannelFromReader(t *testing.T) {
+    //t.Errorf("; values should be the same")
+}
+
+func Test_GetChannelFromReader(t *testing.T) {
     //t.Errorf("; values should be the same")
 }
 

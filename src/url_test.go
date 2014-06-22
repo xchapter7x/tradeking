@@ -67,3 +67,14 @@ func Test_GetStreamForSymbols(t *testing.T) {
         t.Errorf("%s != %s; values should be the same", control, s)
     }
 }
+
+func Test_GetCall(t *testing.T) {
+    control := "{\"status\":\"connected\"}"
+    oauthC := &OAuthMock{}
+    streamChannel := GetCall(oauthC, "FB")
+    s := <- streamChannel.Channel
+
+    if control != s {
+        t.Errorf("%s != %s; values should be the same", control, s)
+    }
+}
